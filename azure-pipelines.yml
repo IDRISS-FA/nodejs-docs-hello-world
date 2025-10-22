@@ -1,13 +1,12 @@
 # Node.js Express Web App to Linux on Azure
 # Build a Node.js Express app and deploy it to Azure as a Linux web app.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
 trigger:
 - main
-pool: 'my-agent'
-variables:
 
+pool: 'my-agent'  # This applies to the entire pipeline
+
+variables:
   # Azure Resource Manager connection created during pipeline creation
   azureSubscription: 'a42e1089-d76f-474b-b8e5-47e1a5731c19'
 
@@ -17,8 +16,7 @@ variables:
   # Environment name
   environmentName: 'ambitious-ocean-536765011ce24ea29e90410872e75ed4'
 
-  # Agent VM image name
-  vmImageName: 'ubuntu-latest'
+  # Remove vmImageName variable since we're using self-hosted agent
 
 stages:
 - stage: Build
@@ -26,9 +24,7 @@ stages:
   jobs:
   - job: Build
     displayName: Build
-    pool:
-      vmImage: $(vmImageName)
-
+    # Remove the pool section here - it will inherit from the pipeline-level pool
     steps:
     - task: NodeTool@0
       inputs:
@@ -61,8 +57,7 @@ stages:
   - deployment: Deploy
     displayName: Deploy
     environment: $(environmentName)
-    pool:
-      vmImage: $(vmImageName)
+    # Remove the pool section here - it will inherit from the pipeline-level pool
     strategy:
       runOnce:
         deploy:
